@@ -21,8 +21,8 @@ import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import FormHelperText from '@mui/material/FormHelperText';
 import { Loading } from '../components/Loading';
-import {Link} from 'react-router-dom'
-import { config } from '../requests/config';
+import { Link, Redirect } from 'react-router-dom'
+import axios from 'axios';
 
 const useStyles = makeStyles(() => ({
     button: {
@@ -32,7 +32,7 @@ const useStyles = makeStyles(() => ({
     link: {
         textDecoration: 'none !important',
         cursor: 'pointer'
-    }
+    },
 }))
 
 export const SignUp = () => {
@@ -65,6 +65,8 @@ export const SignUp = () => {
 
     const [showPassword, setShowPassword] = useState(false)
 
+    const [redirect, setRedirect] = useState(false)
+
     const handleChange = e => {
         if(e.target.name === 'checked') {
             setValues({
@@ -91,18 +93,31 @@ export const SignUp = () => {
         setValues({
             count: values.count + 1,
         })
-    }
-
-    useEffect(() => {
-        if (load) {
-            var data = {
-                email: values.email,
-                first_name: values.name,
-                password: values.pass
-            }
-            config('post', data)
+        let data = JSON.stringify({
+            "email": values.email,
+            "first_name": values.name,
+            "password": values.pass
+        });
+        
+        let config = {
+          method: 'post',
+          url: 'http://dhirajssh.pythonanywhere.com/api/user/register/',
+          headers: { 
+            'Content-Type': 'application/json'
+          },
+          data : data
+        };
+        if (regexPass.test(values.pass) && regexEmail.test(values.email) && regexName.test(values.name) && values.checked) {
+            axios(config)
+            .then((response) => {
+              console.log(JSON.stringify(response.data));
+              setRedirect(true)
+            })
+            .catch((error) => {
+              console.log(error);
+            })
         }
-    }, [load])
+    }
 
     useEffect(() => {
         if (values.count !== 0) {
@@ -112,7 +127,6 @@ export const SignUp = () => {
                 pass: regexPass.test(values.pass),
                 checked: values.checked
             })
-            console.log(valid);
         }
     }, [values.name, values.email, values.pass, values.checked])
 
@@ -124,8 +138,12 @@ export const SignUp = () => {
         setShowPassword(!showPassword);
     };
 
+    if (redirect) {
+        return <Redirect to='/log-in'/>
+    }
+
     return (
-        <Box textAlign='left' mt='-5px'>
+        <Box textAlign='left'>
             <Box textAlign='center' mb='20px'>
                 <Typography variant={sm ? 'h3' : 'h5'}>Create Account</Typography>
                 <Typography variant={sm ? 'subtitle1' : 'subtitle2'}>Already have an account? <Link className={classes.link} to='/log-in'>Log in</Link></Typography>
@@ -165,7 +183,7 @@ export const SignUp = () => {
                     </Box>
                     <Box mt='7px' mb='17px'>
                         <FormControl error={!valid.pass} sx={{ width: '100%' }} variant="outlined">
-                            <InputLabel htmlFor="password">Password</InputLabel>
+                            <InputLabel htmlFor="password" size='small'>Password</InputLabel>
                             <OutlinedInput
                                 id="password"
                                 type={showPassword ? 'text' : 'password'}
@@ -190,7 +208,7 @@ export const SignUp = () => {
                             <FormHelperText id="helper-text">Use 8 to 16 characters with a mix of letters, numbers & symbols</FormHelperText>
                         </FormControl>
                     </Box>
-                    <Box mb='7px' mt="-5px">
+                    <Box mb='7px' mt="-10px">
                         <FormControlLabel
                             control={
                             <Checkbox
@@ -202,7 +220,7 @@ export const SignUp = () => {
                             }
                             label="I agree to the Laws and Agreement*"
                         />
-                        {(!valid.checked) ? (<Typography variant="caption" color='red' mt='-10px'>Check the box to continue</Typography>) : null}
+                        {(!valid.checked) ? (<Typography variant="caption" color='red'>Check the box to continue</Typography>) : null}
                     </Box>
                     <Box mb='25px'>
                         <Button onClick={() => handleCheck()} size='large' variant='contained' className={classes.button} color='primary'>

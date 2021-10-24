@@ -21,7 +21,9 @@ import FormHelperText from '@mui/material/FormHelperText';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import { Loading } from '../components/Loading';
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom';
+import axios from 'axios';
+import { config } from '../requests/config';
 
 const useStyles = makeStyles(() => ({
     button: {
@@ -31,10 +33,11 @@ const useStyles = makeStyles(() => ({
     link: {
         textDecoration: 'none !important',
         cursor: 'pointer'
-    }
+    },
 }))
 
-export const Login = () => {
+export const Login = ({refresh}) => {
+    const history = useHistory()
     const classes = useStyles()
 
     const theme = useTheme();
@@ -67,7 +70,7 @@ export const Login = () => {
     }
     
     const handleCheck = () => {
-        setLoad(regexPass.test(values.pass) && regexId.test(values.id));
+        setLoad(regexId.test(values.id) && regexPass.test(values.pass));
         setValid({
             pass: regexPass.test(values.pass), 
             id: regexId.test(values.id),
@@ -75,6 +78,31 @@ export const Login = () => {
         setValues({
             count: values.count + 1,
         })
+        let data = JSON.stringify({
+            "email": values.id,
+            "password": values.pass
+        });
+    
+        let config = {
+            method: 'post',
+            url: 'http://dhirajssh.pythonanywhere.com/api/token/',
+            headers: { 
+                'Content-Type': 'application/json'
+            },
+            data : data
+        };
+        if (regexId.test(values.id) && regexPass.test(values.pass)) {
+            axios(config)
+            .then((response) => {
+                localStorage.setItem('access', response.data['access'])
+                refresh(response.data['refresh'])
+                history.push('/home')
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+        }
+        
     }
 
     useEffect(() => {
@@ -121,7 +149,7 @@ export const Login = () => {
                     </Box>
                     <Box mt='10px'>
                     <FormControl error={!valid.pass} sx={{ width: '100%' }} variant="outlined">
-                        <InputLabel htmlFor="password">Password</InputLabel>
+                        <InputLabel htmlFor="password" size='small'>Password</InputLabel>
                         <OutlinedInput
                             id="password"
                             type={showPassword ? 'text' : 'password'}

@@ -1,7 +1,9 @@
+import { useEffect, useState } from 'react'
 import { Box, Button, Typography } from "@mui/material"
 import { makeStyles } from '@mui/styles';
 import { Link, NavLink } from 'react-router-dom';
 import { grey } from "@mui/material/colors";
+import axios from 'axios'
 
 const useStyles = makeStyles(() => ({
   button: {
@@ -17,6 +19,25 @@ const useStyles = makeStyles(() => ({
 
 export const Home = () => {
   const classes = useStyles()
+  const bearer = 'Bearer ' + localStorage.getItem('access')
+  useEffect(() => {
+    let config = {
+      method: 'get',
+      url: 'http://dhirajssh.pythonanywhere.com/api/blogs/',
+      headers: { 
+        'Authorization': bearer
+      }
+    };
+
+    axios(config)
+    .then((response) => {
+      console.log(JSON.stringify(response.data));
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+
+  }, [])
   return (
     <Box sx={{backgroundColor: grey[300]}} height='100vh'>
       <Box 
@@ -27,7 +48,7 @@ export const Home = () => {
           alignItems: 'center',
           justifyContent: 'space-between',
           height: '70px',
-          paddingX: '30px'
+          paddingX: '50px'
         }}
       >
         <Box>
@@ -41,39 +62,12 @@ export const Home = () => {
             width: '30%'
           }}
         >
-          <NavLink to='/all-posts'  className={classes.link}>All Posts</NavLink>
+          <Typography variant='h6'>Posts: </Typography>
           <NavLink to='/my-posts'  className={classes.link}>My Posts</NavLink>
-          <NavLink to='/log-in'  className={classes.link}><Button variant="contained">Log in</Button></NavLink>
-          <NavLink to='/sign-up'  className={classes.link}><Button variant="contained" color='secondary'>Sign in</Button></NavLink>
+          <NavLink to='/'  className={classes.link}><Button variant="contained">Log out</Button></NavLink>
         </Box>
       </Box>
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          height: '80%'
-        }}
-      >
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            flexDirection: 'column',
-            width: '40%'
-          }}
-        >
-          <Typography variant='h2' color='primary'>To start posting blogs</Typography>
-          <Box display='flex' justifyContent='space-around' mt='80px' width='100%'>
-            <Link to='/login' className={classes.link}>
-              <Button color='primary' size='large' variant='contained' disableElevation>Log in</Button>
-            </Link>
-            <Link to='/sign-up' className={classes.link}>
-              <Button color='secondary' size='large' variant='contained' disableElevation>Sign in</Button>
-            </Link>
-          </Box>
-        </Box>
-      </Box>
+      
     </Box>
   )
 }

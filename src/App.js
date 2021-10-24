@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   BrowserRouter as Router,
   Switch,
@@ -15,6 +16,7 @@ import { grey } from "@mui/material/colors";
 import { makeStyles } from '@mui/styles';
 import { Login } from "./pages/Login";
 import { SignUp } from "./pages/Sign-up";
+import { Startup } from "./pages/Startup";
 import { Home } from "./pages/Home";
 import './App.css';
 
@@ -37,10 +39,14 @@ function App() {
   const theme = useTheme();
   const sm = useMediaQuery(theme.breakpoints.up('sm'));
   const md = useMediaQuery(theme.breakpoints.up('md'));
+  const [refresh, setRefresh] = useState()
   return (
     <Router>
       <Switch>
         <Route path='/' exact>
+          <Startup />
+        </Route>
+        <Route path='/home' exact>
           <Home />
         </Route>
         <Route path='/log-in' exact>
@@ -55,7 +61,7 @@ function App() {
               </Grid>
               <Grid item height='68%'>
                 <Box textAlign='center' borderRadius={2} pt={sm ? '40px' : '25px'} pb='10px' px={sm ? '70px' : '20px'} className={classes.box} width={md ? '35vw' : '80vw'}>
-                  <Login />
+                  <Login refresh={setRefresh} />
                 </Box>
               </Grid>
             </Grid>
