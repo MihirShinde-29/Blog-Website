@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useContext } from 'react'
 import { Link } from 'react-router-dom';
 import { Box, Typography, CircularProgress, Button } from "@mui/material"
 import { makeStyles } from '@mui/styles';
 import { Blog } from '../components/Blog'
 import AddIcon from '@mui/icons-material/Add';
 import axiosInstance from '../utils/axiosInstance';
+import { UserContext } from '../context/UserContext'
 
 const useStyles = makeStyles(() => ({
   button: {
@@ -21,7 +22,7 @@ const useStyles = makeStyles(() => ({
 export const Home = () => {
   const classes = useStyles()
 
-  const [blogs, setBlogs] = useState()
+  const { blogs, setBlogs } = useContext(UserContext)
 
   const [load, setLoad] = useState(true)
 

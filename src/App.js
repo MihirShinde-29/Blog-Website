@@ -1,3 +1,4 @@
+import { useContext } from "react";
 import {
   BrowserRouter as Router,
   Switch,
@@ -21,6 +22,7 @@ import { Home } from "./pages/Home";
 import { Myblogs } from "./pages/Myblogs";
 import { AddBlog } from "./pages/AddBlog";
 import { Navbar } from './components/Navbar';
+import { UserContext } from "./context/UserContext";
 import './App.css';
 
 const useStyles = makeStyles(() => ({
@@ -38,55 +40,53 @@ const useStyles = makeStyles(() => ({
 }))
 
 function App() {
+  const {login} = useContext(UserContext)
   const classes = useStyles()
   const theme = useTheme();
-  const login = localStorage.getItem('login')
   const sm = useMediaQuery(theme.breakpoints.up('sm'));
   const md = useMediaQuery(theme.breakpoints.up('md'));
   return (
-    <div>
-      <Router>
-        <Switch>
-          <Route path='/' exact>
-            <Navbar />
-            {(login) ? <Redirect to='/home' /> : <Startup />}
-          </Route>
-          <Route path='/home' exact>
-            <Navbar />
-            <Home />
-          </Route>
-          <Route path='/my-blogs' exact>
-            <Navbar />
-            <Myblogs />
-          </Route>
-          <Route path='/add-blog' exact>
-            <Navbar />
-            <AddBlog />
-          </Route>
-          <Box height={md ? '100vh' : '100%'} sx={{backgroundColor: grey[300]}}>
-            <Grid container direction='column' alignItems='center' spacing={0} height='100%'>
-              <Grid item>
-                <Box my={sm ? '40px' : '20px'}>
-                  <Link className={classes.link} to='/'>
-                    <Typography variant={sm ? 'h2' : 'h4'} color=''>Blog Posting</Typography>
-                  </Link>
-                </Box>
-              </Grid>
-              <Grid item height='68%'>
-                <Box textAlign='center' borderRadius={2} pt={sm ? '40px' : '25px'} pb='10px' px={sm ? '70px' : '20px'} className={classes.box} width={md ? '35vw' : '80vw'}>
-                  <Route path='/log-in' exact>
-                    <Login />
-                  </Route>
-                  <Route path='/sign-up' exact>
-                    <SignUp />
-                  </Route>
-                </Box>
-              </Grid>
+    <Router>
+      <Switch>
+        <Route path='/' exact>
+          <Navbar />
+          {(login) ? <Redirect to='/home' /> : <Startup />}
+        </Route>
+        <Route path='/home' exact>
+          <Navbar />
+          <Home />
+        </Route>
+        <Route path='/my-blogs' exact>
+          <Navbar />
+          <Myblogs />
+        </Route>
+        <Route path='/add-blog' exact>
+          <Navbar />
+          <AddBlog />
+        </Route>
+        <Box height={md ? '100vh' : '100%'} sx={{backgroundColor: grey[300]}}>
+          <Grid container direction='column' alignItems='center' spacing={0} height='100%'>
+            <Grid item>
+              <Box my={sm ? '40px' : '20px'}>
+                <Link className={classes.link} to='/'>
+                  <Typography variant={sm ? 'h2' : 'h4'} color=''>Blog Posting</Typography>
+                </Link>
+              </Box>
             </Grid>
-          </Box>
-        </Switch>
-      </Router>
-    </div>
+            <Grid item height='68%'>
+              <Box textAlign='center' borderRadius={2} pt={sm ? '40px' : '25px'} pb='10px' px={sm ? '70px' : '20px'} className={classes.box} width={md ? '35vw' : '80vw'}>
+                <Route path='/log-in' exact>
+                  <Login />
+                </Route>
+                <Route path='/sign-up' exact>
+                  <SignUp />
+                </Route>
+              </Box>
+            </Grid>
+          </Grid>
+        </Box>
+      </Switch>
+    </Router>
   );
 }
 

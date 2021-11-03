@@ -1,9 +1,12 @@
 import { useState } from 'react'
+import { useHistory } from 'react-router-dom';
 import ImageUploader from 'react-images-upload';
 import { Box, Typography, Button, TextField } from "@mui/material"
-import axios from 'axios'
+import axiosInstance from '../utils/axiosInstance';
 
 export const AddBlog = () => {
+  const history = useHistory()
+
   const [values, setValues] = useState({
     image: null,
     title: 'My Blog',
@@ -33,25 +36,13 @@ export const AddBlog = () => {
     if (values.description !== '' && values.title !== '' && values.image !== '') addPost(data)
   }
 
-  const addPost = data => {
-    let access = 'Bearer ' + localStorage.getItem('access')
-    let config = {
-      method: 'post',
-      url: 'http://dhirajssh.pythonanywhere.com/api/blogs/',
-      headers: { 
-        'Authorization': access,
-        'content-type': 'multipart/form-data',
-      },
-      data : data
-    };
+  let api = axiosInstance
 
-    axios(config)
-    .then((response) => {
-      console.log(JSON.stringify(response.data));
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+  const addPost = async data => {
+    let response = await api.post('/blogs/', data)
+    if (response.status === 201) {
+      history.push('/')
+    }
   }
 
   return (

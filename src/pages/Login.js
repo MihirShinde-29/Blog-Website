@@ -1,4 +1,4 @@
-import React, {  useState, useEffect } from 'react'
+import React, {  useState, useEffect, useContext } from 'react'
 import { makeStyles } from '@mui/styles';
 import { 
     Box, 
@@ -22,6 +22,7 @@ import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import { Loading } from '../components/Loading';
 import { Link, useHistory } from 'react-router-dom';
+import { UserContext } from '../context/UserContext'
 import axios from 'axios';
 
 const useStyles = makeStyles(() => ({
@@ -36,6 +37,7 @@ const useStyles = makeStyles(() => ({
 }))
 
 export const Login = () => {
+    const { setEmail, setLogin } = useContext(UserContext)
     const history = useHistory()
     const classes = useStyles()
 
@@ -95,6 +97,8 @@ export const Login = () => {
             .then((response) => {
                 localStorage.setItem('tokens', JSON.stringify(response.data))
                 history.push('/home')
+                setEmail(values.id)
+                setLogin(true)
             })
             .catch((error) => {
                 console.log(error);

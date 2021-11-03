@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
-import { Box, Button, Typography, Avatar, Menu, MenuItem } from "@mui/material"
+import { useState, useEffect, useContext } from "react";
+import { Box, Typography, Avatar, Menu, MenuItem } from "@mui/material"
 import { makeStyles } from '@mui/styles';
-import { Link, NavLink, useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { grey } from "@mui/material/colors";
+import { UserContext } from '../context/UserContext'
 
 const useStyles = makeStyles(() => ({
   button: {
@@ -16,19 +17,13 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
-export const Navbar = ({blogs}) => {
+export const Navbar = () => {
+
+  const {blogs, login, setLogin, email} = useContext(UserContext)
+
   const classes = useStyles()
 
   const history = useHistory()
-
-  let login = localStorage.getItem('login')
-  let access = localStorage.getItem('access')
-  let name = localStorage.getItem('email')
-  useEffect(() => {
-    login = localStorage.getItem('login')
-    access = localStorage.getItem('access')
-    name = localStorage.getItem('email')
-  }, [])
   
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -43,9 +38,7 @@ export const Navbar = ({blogs}) => {
   };
 
   const Logout = () => {
-    localStorage.setItem('login', false)
-    localStorage.setItem('email', '')
-    localStorage.setItem('access', '')
+    setLogin(false)
     history.push('/')
   }
 
@@ -64,11 +57,13 @@ export const Navbar = ({blogs}) => {
         <Typography variant='h4' color='secondary'>BLOG POSTING</Typography>
       </Box>
       <Box sx={{display: 'flex', alignItems: 'center'}}>
-        {blogs && <Typography variant='h6'>{blogs ? blogs.length : ''} Posts</Typography>}
-        <Link to='/' className={classes.link}>
-          <Typography variant='h5' sx={{marginLeft: '10px'}}>Home</Typography>
-        </Link>
-        <Avatar onClick={handleClick} sx={{marginLeft: '50px'}}>{/*login && name[0].toUpperCase()*/}</Avatar>
+        {(login && blogs) && <Typography variant='h5'>{blogs.length} Blogs</Typography>}
+        <Box sx={{marginLeft: '50px'}}>
+          <Link to='/' className={classes.link}>
+            <Typography variant='h5'>Home</Typography>
+          </Link>
+        </Box>
+        <Avatar onClick={handleClick} sx={{marginLeft: '50px'}}>{login ? email.charAt(0).toUpperCase() : null}</Avatar>
       </Box>
       <Menu
         anchorEl={anchorEl}
