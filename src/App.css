@@ -4,4 +4,6 @@ body {
   box-sizing: border-box;
   font-family: 'Roboto', sans-serif;
   height: 100%;
+  overflow: auto;
+  background-color: #e0e0e0;
 }

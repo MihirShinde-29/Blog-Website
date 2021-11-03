@@ -95,6 +95,8 @@ export const Login = ({refresh}) => {
             axios(config)
             .then((response) => {
                 localStorage.setItem('access', response.data['access'])
+                localStorage.setItem('login', true)
+                localStorage.setItem('email', values.id)
                 refresh(response.data['refresh'])
                 history.push('/home')
             })

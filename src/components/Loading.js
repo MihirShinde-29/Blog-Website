@@ -12,7 +12,7 @@ export const Loading = ({ load, setLoad, values }) => {
             open={load}
             onClick={() => setLoad(false)}
         >
-            <Box display='flex' flexDirection='column' justifyContent='center' alignItems='center' sx={{backgroundColor: 'white'}}>
+            <Box display='flex' flexDirection='column' justifyContent='center' alignItems='center'>
                 <CircularProgress color="inherit" />
                 <Typography variant="h5">{values.title ? 'Creating' : 'Logging In'} Your Account...</Typography>
             </Box>

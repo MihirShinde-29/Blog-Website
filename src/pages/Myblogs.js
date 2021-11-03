@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom';
-import { Box, Typography, CircularProgress, Button } from "@mui/material"
+import { Box, Button, Typography, CircularProgress } from "@mui/material"
 import { makeStyles } from '@mui/styles';
-import { Blog } from '../components/Blog'
-import AddIcon from '@mui/icons-material/Add';
+import { Link, NavLink } from 'react-router-dom';
+import { grey } from "@mui/material/colors";
 import axios from 'axios'
+import {Blog} from '../components/Blog'
 
 const useStyles = makeStyles(() => ({
   button: {
@@ -18,7 +18,7 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
-export const Home = () => {
+export const Myblogs = () => {
   const classes = useStyles()
 
   const [blogs, setBlogs] = useState()
@@ -30,14 +30,15 @@ export const Home = () => {
   useEffect(() => {
     let config = {
       method: 'get',
-      url: 'http://dhirajssh.pythonanywhere.com/api/blogs/',
-      headers: { 
+      url: 'http://dhirajssh.pythonanywhere.com/api/user/blogs/',
+      headers: {
         'Authorization': bearer
       }
     };
 
     axios(config)
     .then((response) => {
+      console.log(JSON.stringify(response.data));
       setBlogs(response.data)
       setLoad(false)
     })
@@ -46,6 +47,8 @@ export const Home = () => {
     });
 
   }, [])
+
+  useEffect(() => console.log(blogs),[blogs])
 
   return (
     <Box pt='30px'>
@@ -56,14 +59,7 @@ export const Home = () => {
             <Typography variant="h5">Loading...</Typography>
           </Box> : 
           <Box px='100px' sx={{maxWidth: '600px', margin: '0 auto'}}>
-            <Box display='flex' justifyContent='space-between' alignItems='center'>
-              <Typography variant='h4'>All Blogs</Typography>
-              <Link to='/add-blog' className={classes.link}>
-                <Button variant="outlined" startIcon={<AddIcon />}>
-                  Add Blog
-                </Button>
-              </Link>
-            </Box>
+            <Typography variant='h4'>My Blogs</Typography>
             <Box pt='30px' sx={{display: 'grid', gridTemplateColumns: 'repeat(1, 1fr)', gap:6, marginBottom: '50px'}}>
               {(blogs) && (
                 blogs.map(blog => (
