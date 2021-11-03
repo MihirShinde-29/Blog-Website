@@ -4,16 +4,13 @@ import {
   Card, 
   CardHeader, 
   CardMedia, 
-  CardContent, 
-  CardActions, 
+  CardContent,
   IconButton, 
   Typography,
   Menu,
   MenuItem
 } from '@mui/material'
 import { grey } from "@mui/material/colors";
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import ShareIcon from '@mui/icons-material/Share';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 
@@ -31,7 +28,7 @@ export const Blog = ({blog}) => {
   };
 
   return (
-    <Box width="100%">
+    <Box width="100%" key={blog.id}>
       <Card>
         <CardHeader
           action={

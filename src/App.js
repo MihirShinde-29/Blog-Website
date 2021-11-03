@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import {
   BrowserRouter as Router,
   Switch,
@@ -44,7 +43,6 @@ function App() {
   const login = localStorage.getItem('login')
   const sm = useMediaQuery(theme.breakpoints.up('sm'));
   const md = useMediaQuery(theme.breakpoints.up('md'));
-  const [refresh, setRefresh] = useState()
   return (
     <div>
       <Router>
@@ -77,7 +75,7 @@ function App() {
               <Grid item height='68%'>
                 <Box textAlign='center' borderRadius={2} pt={sm ? '40px' : '25px'} pb='10px' px={sm ? '70px' : '20px'} className={classes.box} width={md ? '35vw' : '80vw'}>
                   <Route path='/log-in' exact>
-                    <Login refresh={setRefresh} />
+                    <Login />
                   </Route>
                   <Route path='/sign-up' exact>
                     <SignUp />

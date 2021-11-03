@@ -23,7 +23,6 @@ import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import { Loading } from '../components/Loading';
 import { Link, useHistory } from 'react-router-dom';
 import axios from 'axios';
-import { config } from '../requests/config';
 
 const useStyles = makeStyles(() => ({
     button: {
@@ -36,7 +35,7 @@ const useStyles = makeStyles(() => ({
     },
 }))
 
-export const Login = ({refresh}) => {
+export const Login = () => {
     const history = useHistory()
     const classes = useStyles()
 
@@ -94,10 +93,7 @@ export const Login = ({refresh}) => {
         if (regexId.test(values.id) && regexPass.test(values.pass)) {
             axios(config)
             .then((response) => {
-                localStorage.setItem('access', response.data['access'])
-                localStorage.setItem('login', true)
-                localStorage.setItem('email', values.id)
-                refresh(response.data['refresh'])
+                localStorage.setItem('tokens', JSON.stringify(response.data))
                 history.push('/home')
             })
             .catch((error) => {

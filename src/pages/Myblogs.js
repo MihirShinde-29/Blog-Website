@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react'
-import { Box, Button, Typography, CircularProgress } from "@mui/material"
+import { Box, Typography, CircularProgress } from "@mui/material"
 import { makeStyles } from '@mui/styles';
-import { Link, NavLink } from 'react-router-dom';
-import { grey } from "@mui/material/colors";
 import axios from 'axios'
 import {Blog} from '../components/Blog'
+import axiosInstance from '../utils/axiosInstance';
 
 const useStyles = makeStyles(() => ({
   button: {
@@ -25,30 +24,42 @@ export const Myblogs = () => {
 
   const [load, setLoad] = useState(true)
 
-  const bearer = 'Bearer ' + localStorage.getItem('access')
+  let api = axiosInstance
+
+  // useEffect(() => {
+  //   let config = {
+  //     method: 'get',
+  //     url: 'http://dhirajssh.pythonanywhere.com/api/user/blogs/',
+  //     headers: {
+  //       'Authorization': bearer
+  //     }
+  //   };
+  //   console.log(bearer)
+  //   axios(config)
+  //   .then((response) => {
+  //     console.log(JSON.stringify(response.data));
+  //     setBlogs(response.data)
+  //     setLoad(false)
+  //   })
+  //   .catch((error) => {
+  //     console.log(error);
+  //   });
+
+  // }, [])
 
   useEffect(() => {
-    let config = {
-      method: 'get',
-      url: 'http://dhirajssh.pythonanywhere.com/api/user/blogs/',
-      headers: {
-        'Authorization': bearer
-      }
-    };
-
-    axios(config)
-    .then((response) => {
-      console.log(JSON.stringify(response.data));
-      setBlogs(response.data)
-      setLoad(false)
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-
+    getMyBlogs()
   }, [])
 
-  useEffect(() => console.log(blogs),[blogs])
+  let getMyBlogs = async() => {
+    let response = await api.get('/user/blogs/')
+
+    if (response.status === 200) {
+      console.log(response.data)
+      setBlogs(response.data)
+      setLoad(false)
+    }
+  }
 
   return (
     <Box pt='30px'>

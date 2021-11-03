@@ -107,6 +107,7 @@ export const SignUp = () => {
           },
           data : data
         };
+        
         if (regexPass.test(values.pass) && regexEmail.test(values.email) && regexName.test(values.name) && values.checked) {
             axios(config)
             .then((response) => {

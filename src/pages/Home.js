@@ -4,7 +4,7 @@ import { Box, Typography, CircularProgress, Button } from "@mui/material"
 import { makeStyles } from '@mui/styles';
 import { Blog } from '../components/Blog'
 import AddIcon from '@mui/icons-material/Add';
-import axios from 'axios'
+import axiosInstance from '../utils/axiosInstance';
 
 const useStyles = makeStyles(() => ({
   button: {
@@ -25,27 +25,20 @@ export const Home = () => {
 
   const [load, setLoad] = useState(true)
 
-  const bearer = 'Bearer ' + localStorage.getItem('access')
+  let api = axiosInstance
 
   useEffect(() => {
-    let config = {
-      method: 'get',
-      url: 'http://dhirajssh.pythonanywhere.com/api/blogs/',
-      headers: { 
-        'Authorization': bearer
-      }
-    };
+    getBlogs()
+  }, [])
 
-    axios(config)
-    .then((response) => {
+  let getBlogs = async() =>{
+    let response = await api.get('/blogs/')
+
+    if(response.status === 200){
       setBlogs(response.data)
       setLoad(false)
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-
-  }, [])
+    }
+  }
 
   return (
     <Box pt='30px'>
