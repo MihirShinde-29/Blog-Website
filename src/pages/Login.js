@@ -1,4 +1,4 @@
-import React, {  useState, useEffect, useContext } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { makeStyles } from '@mui/styles';
 import { 
     Box, 
@@ -95,10 +95,11 @@ export const Login = () => {
         if (regexId.test(values.id) && regexPass.test(values.pass)) {
             axios(config)
             .then((response) => {
-                localStorage.setItem('tokens', JSON.stringify(response.data))
-                history.push('/home')
-                setEmail(values.id)
+                localStorage.setItem('access', JSON.stringify(response.data.access))
+                localStorage.setItem('refresh', JSON.stringify(response.data.refresh))
                 setLogin(true)
+                setEmail(values.id)
+                history.push('/')
             })
             .catch((error) => {
                 console.log(error);

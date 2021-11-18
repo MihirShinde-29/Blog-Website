@@ -21,6 +21,7 @@ import { Startup } from "./pages/Startup";
 import { Home } from "./pages/Home";
 import { Myblogs } from "./pages/Myblogs";
 import { AddBlog } from "./pages/AddBlog";
+import { EditBlog } from "./pages/EditBlog";
 import { Navbar } from './components/Navbar';
 import { UserContext } from "./context/UserContext";
 import './App.css';
@@ -40,7 +41,7 @@ const useStyles = makeStyles(() => ({
 }))
 
 function App() {
-  const {login} = useContext(UserContext)
+  const { login } = useContext(UserContext)
   const classes = useStyles()
   const theme = useTheme();
   const sm = useMediaQuery(theme.breakpoints.up('sm'));
@@ -63,6 +64,10 @@ function App() {
         <Route path='/add-blog' exact>
           <Navbar />
           <AddBlog />
+        </Route>
+        <Route path='/edit/'>
+          <Navbar />
+          <EditBlog />
         </Route>
         <Box height={md ? '100vh' : '100%'} sx={{backgroundColor: grey[300]}}>
           <Grid container direction='column' alignItems='center' spacing={0} height='100%'>

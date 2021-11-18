@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useContext } from "react";
 import { Box, Typography, Avatar, Menu, MenuItem } from "@mui/material"
 import { makeStyles } from '@mui/styles';
 import { Link, useHistory } from 'react-router-dom';
@@ -19,7 +19,7 @@ const useStyles = makeStyles(() => ({
 
 export const Navbar = () => {
 
-  const {blogs, login, setLogin, email} = useContext(UserContext)
+  const { login, setLogin, email, setEmail, setBlogs, count } = useContext(UserContext)
 
   const classes = useStyles()
 
@@ -39,6 +39,10 @@ export const Navbar = () => {
 
   const Logout = () => {
     setLogin(false)
+    setEmail(null)
+    setBlogs(null)
+    localStorage.removeItem("access")
+    localStorage.removeItem("refresh")
     history.push('/')
   }
 
@@ -57,7 +61,7 @@ export const Navbar = () => {
         <Typography variant='h4' color='secondary'>BLOG POSTING</Typography>
       </Box>
       <Box sx={{display: 'flex', alignItems: 'center'}}>
-        {(login && blogs) && <Typography variant='h5'>{blogs.length} Blogs</Typography>}
+        {(login && count) && <Typography variant='h5'>{count} Blogs</Typography>}
         <Box sx={{marginLeft: '50px'}}>
           <Link to='/' className={classes.link}>
             <Typography variant='h5'>Home</Typography>

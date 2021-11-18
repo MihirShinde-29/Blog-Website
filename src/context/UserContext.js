@@ -3,10 +3,13 @@ import { createContext, useState } from "react";
 export const UserContext = createContext();
 
 const UserProvider = ({ children }) => {
-
   const [blogs, setBlogs] = useState()
 
-  const [login, setLogin] = useState(false)
+  const [editBlog, setEditBlog] = useState()
+
+  const [count, setCount] = useState()
+
+  const [login, setLogin] = useState(localStorage.getItem('access') ? true : false)
 
   const [email, setEmail] = useState('')
 
@@ -17,6 +20,10 @@ const UserProvider = ({ children }) => {
     setLogin: setLogin,
     email:email,
     setEmail: setEmail,
+    editBlog: editBlog,
+    setEditBlog: setEditBlog,
+    count: count,
+    setCount: setCount,
   }
 
   return(

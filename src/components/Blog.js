@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useContext } from 'react'
+import { Link } from 'react-router-dom';
 import { 
   Box, 
   Card, 
@@ -12,13 +13,34 @@ import {
 } from '@mui/material'
 import { grey } from "@mui/material/colors";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { makeStyles } from '@mui/styles';
+import { UserContext } from '../context/UserContext';
+import axiosInstance from '../utils/axiosInstance';
+import Swal from 'sweetalert2'
 
+const useStyles = makeStyles(() => ({
+  button: {
+      width: '100%',
+      margin: '10px 0'
+  },
+  link: {
+      textDecoration: 'none !important',
+      cursor: 'pointer',
+      color: 'black'
+  }
+}))
 
-export const Blog = ({blog}) => {
+export const Blog = ({ blog }) => {
+
+  const { setEditBlog } = useContext(UserContext)  
+
+  const classes = useStyles()
 
   const [anchorEl, setAnchorEl] = useState(null);
 
   const open = Boolean(anchorEl);
+
+  let api = axiosInstance
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -26,9 +48,43 @@ export const Blog = ({blog}) => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+  
+  let Delete = async () => {
+    let response = await api.delete('blogs/detail/' + blog.id)
+    console.log(response);
+    if(response.status === 200){
+      console.log(response.data)
+      Swal.fire(
+        'Deleted!',
+        'Your file has been deleted.',
+        'success'
+      )
+    }
+    if (response === undefined) {
+      Swal.fire(
+        'Declined',
+        'You cannot delete this file.',
+        'swarning'
+      )
+    }
+  }
+
+  const PopUp = () => {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Delete()
+      }
+    })
+  }
 
   return (
-    <Box width="100%" key={blog.id}>
+    <Box width="100%">
       <Card>
         <CardHeader
           action={
@@ -43,7 +99,7 @@ export const Blog = ({blog}) => {
         <CardMedia
           component="img"
           height="300"
-          image={'http://dhirajssh.pythonanywhere.com/' + blog.image}
+          image={blog.image.includes('http://dhirajssh.pythonanywhere.com') ? blog.image : ('http://dhirajssh.pythonanywhere.com' + blog.image)}
           alt={blog.title}
           sx={{backgroundColor: grey[500], display: 'flex', justifyContent: 'center'}}
         />
@@ -87,10 +143,12 @@ export const Blog = ({blog}) => {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <MenuItem>
-          Edit
-        </MenuItem>
-        <MenuItem>
+        <Link to={'/edit/' + blog.id}  className={classes.link} onClick={() => setEditBlog(blog)}>
+          <MenuItem>
+            Edit
+          </MenuItem>
+        </Link>
+        <MenuItem onClick={() => PopUp()}>
           Delete
         </MenuItem>
       </Menu>
